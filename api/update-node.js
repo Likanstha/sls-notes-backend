@@ -1,10 +1,11 @@
 /**
- * Route: POST /note/n{node_id}
+ * Route: POST /note/n{note_id}
  */
 
  const AWS = require('aws-sdk');
- AWS.config.update({ region: 'ap-southeast-2' });
+AWS.config.update({ region: 'ap-southeast-2' });
  
+ const moment = require('moment');
  const util = require("./util.js");
  
  const dynamodb = new AWS.DynamoDB.DocumentClient();
@@ -15,10 +16,27 @@
  exports.handler = async (event) => {
      try {
          
+        let item = JSON.parse(event.body).Item;
+        item.user_id = util.getUserId(event.handers);
+        item.user_name = util.getUserName(event.handers);
+        item.expires = moment().add(9, 'days').unix();
+
+        let data = await dynamodb.put({
+            TableName: tableName,
+            Item: item,
+            ConditionExpression: '#t = :t',
+            ExpressionAttributeNames: {
+                '#t':'timestamp'
+            },
+            ExpressionAttributeValues: {
+                ':t':item.timestamp
+            }
+        }).promise();
+         
          return {
              statusCode: 200,
              headers: util.getResponseHeaders(),
-             body: JSON.stringify('')
+             body: JSON.stringify(item)
              }
  
  
