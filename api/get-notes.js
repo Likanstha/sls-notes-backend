@@ -29,6 +29,8 @@
             Limit: limit, // Corrected 'limit' to 'Limit'
             ScanIndexForward: false
         };
+         
+         
 
         let startTimestamp = query && query.start ? parseInt(query.start) : 0;
 
@@ -40,7 +42,9 @@
             };
         }
          
-         let data = await dynamodb.query(params).promise();
+        console.log("DynamoDB Query Params:", params);
+        let data = await dynamodb.query(params).promise();
+        console.log("DynamoDB Query Result:", data);
          
          
          

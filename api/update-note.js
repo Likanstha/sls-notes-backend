@@ -17,8 +17,8 @@ AWS.config.update({ region: 'ap-southeast-2' });
      try {
          
         let item = JSON.parse(event.body).Item;
-        item.user_id = util.getUserId(event.handers);
-        item.user_name = util.getUserName(event.handers);
+        item.user_id = util.getUserId(event.headers);
+        item.user_name = util.getUserName(event.headers);
         item.expires = moment().add(9, 'days').unix();
 
         let data = await dynamodb.put({
